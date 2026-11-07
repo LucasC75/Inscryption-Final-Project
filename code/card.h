@@ -14,6 +14,13 @@ typedef struct deck {
 
 }Deck;
 
+void addHand(int d);
+
+Card drawMain();
+
+Card drawS();
+
+void makeCard(Card new);
 
 
 #endif
