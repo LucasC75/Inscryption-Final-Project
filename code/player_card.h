@@ -21,7 +21,7 @@ typedef struct deck {
 }Deck;
 
 typedef struct hand {
-        Card card;
+        Mcard card;
         struct hand *next;
 }Hand;
 
