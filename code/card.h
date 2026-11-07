@@ -3,7 +3,8 @@
 typedef struct card {
         int health;
         int attack;
-        int requirement
+        char sigil;
+        int requirement;
 
 }Card;
 
