@@ -23,7 +23,7 @@ typedef struct hand {
 
 
 
-Card cardList[];
+Card cardList[31];
 
 void addHand(int d);
 
