@@ -1,1 +1,37 @@
+*Game functions
+  -the scale(scoreboard)
+  -2 lives system
+  -the bell(next turn)
+  -card blood requirements
+*player functions
+  -blood deck
+  -main deck
+  -hand
+*opponent functions
+  -random deck
+  -skip option
+  -regular (1 life)
+  -boss(2 lives)
+*cards
+ //no blood requirement
+  -squirrel
+ //1 blood requirement
+  -stoat
+  -bullfrog
+  -cat
+  -bat
+  -cub
+  -sparrow
+ //2 blood requirement
+  -wolf
+  -river tortoise
+  -addler
+ //3 blood requirement
+  -bear
+*card attributes
+  -flying
+  -airborn defence
+  -infinite sacrifice
+  -time upgrade
+  -insta kill
 
