@@ -1,3 +1,5 @@
+--Name, Sigil, Requirement, Health, Attack-- THIS IS CURRENT
+--Name, Health, Attack, Sigil, Reuirement-- NEEDS TO BE THIS
 Stoat,        0,1,3,0
 Coyote,       0,1,1,2
 Wolf,         0,2,2.3
