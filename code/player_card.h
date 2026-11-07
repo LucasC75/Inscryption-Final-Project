@@ -6,6 +6,7 @@
 
 
 typedef struct card {
+        char name[50];
         int health;
         int attack;
         int sigil;
