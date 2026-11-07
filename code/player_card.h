@@ -8,10 +8,10 @@ typedef struct card {
         int sigil;
         int requirement;
 
-}MCard;
+}Mcard;
 
 typedef struct deck {
-        MCard card;
+        Mcard card;
         struct deck *next;
 
 }Deck;
