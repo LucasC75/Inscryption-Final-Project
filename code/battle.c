@@ -1,5 +1,5 @@
 #include "player_card.h"
-
+//NEEDS THE 2D ARRAY FOR BOARD and the display function for it
 int isEmptyDeck(Deck *top) {
     return top == NULL;
 }
