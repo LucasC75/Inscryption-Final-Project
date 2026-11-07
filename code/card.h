@@ -6,7 +6,7 @@ typedef struct card {
         char sigil;
         int requirement;
 
-}Card;
+}MCard;
 
 typedef struct deck {
         Card card;
