@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_CARDS 31
+
+
 typedef struct card {
         int health;
         int attack;
@@ -23,7 +26,7 @@ typedef struct hand {
 
 
 
-Card cardList[31];
+Card cardList[MAX_CARDS];
 
 void addHand(int d);
 
