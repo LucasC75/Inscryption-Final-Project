@@ -12,7 +12,7 @@
   -skip option
   -regular (1 life)
   -boss(2 lives)
-*cards
+~~*cards~~
  //no blood requirement
   -squirrel
  //1 blood requirement
