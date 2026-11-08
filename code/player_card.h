@@ -20,6 +20,12 @@ typedef struct deck {
 
 }Deck;
 
+typedef struct squirrelDeck {
+        Mcard card;
+        struct deck *next;
+
+}Sdeck;
+
 typedef struct hand {
         Mcard card;
         struct hand *next;
@@ -31,7 +37,7 @@ Card cardList[MAX_CARDS];
 
 void addHand(int d);
 
-Card drawMain();
+Card drawDeck();
 
 Card drawS();
 
@@ -47,8 +53,9 @@ void displayAttributes();
 //player stuff
 
 typedef struct player {
-        struct Deck;
-        struct Hand;
+        Deck Pile;
+        Sdeck Blood;
+        Hand Active;
 }Player;
 
 #endif
