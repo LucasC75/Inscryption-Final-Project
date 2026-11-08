@@ -48,7 +48,7 @@ void displayBoard();
 void displayScale();
 void displayAttributes();
 
-
+//FUNCTION SWITCH STATEMENT FOR EACH ATTRIBUTE AND THEIR NUMBER. should print the attribute name based off of the corresponding number. 
 
 //player stuff
 
