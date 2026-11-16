@@ -41,3 +41,15 @@ int loadCards(const char *filename, Mcard cards[], int maxCards) {
     return 0;
 }*/
  
+void displayScale(int score, int maxScore)
+{
+    if (score >  maxScore) score =  maxScore;
+    if (score < -maxScore) score = -maxScore;
+    int pos = BAR + score * BAR / maxScore;
+
+    printf("OPPONENT [");
+    for (int i = 0; i <= 2 * BAR; i++)
+        putchar(i == pos ? 'O' : i == BAR ? '|' : '-');
+    printf("] YOU (%+d)\n", score);
+}
+
