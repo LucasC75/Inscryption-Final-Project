@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+int score = 0;
+int maxScore = 5;
+
 #define MAX_CARDS 31
 
 
