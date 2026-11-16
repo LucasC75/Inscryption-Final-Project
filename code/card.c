@@ -1,6 +1,6 @@
 #include "player_card.h"
 
-//Card creation. Read from the .txt file and copy it into an array 
+//==========================Card creation. Read from the .txt file and copy it into an array=======================
 
 int loadCards(const char *filename, Mcard cards[], int maxCards) {
     FILE *fp = fopen(filename, "r");
@@ -40,7 +40,9 @@ int loadCards(const char *filename, Mcard cards[], int maxCards) {
  
     return 0;
 }*/
- 
+
+//====================================================DISPLAY FUNCTIONS=========================================
+
 void displayScale(int score, int maxScore)
 {
     if (score >  maxScore) score =  maxScore;
@@ -53,3 +55,29 @@ void displayScale(int score, int maxScore)
     printf("] YOU (%+d)\n", score);
 }
 
+void printBoard(Mcard *board[8])
+{
+    for (int r = 4; r >= 0; r -= 4) {                 /* top row first */
+        for (int line = 0; line < 8; line++) {
+            for (int i = r; i < r + 4; i++) {
+                Mcard *c = board[i];
+                char s[64] = "";
+
+                if (line == 0 || line == 7) {         /* top/bottom edge */
+                    printf("+%.*s+ ", W, "--------------------");
+                    continue;
+                }
+                if (line == 1)       snprintf(s, sizeof s, "%d", i + 1);
+                else if (!c)         { if (line == 3) snprintf(s, sizeof s, "  empty"); }
+                else if (line == 2)  snprintf(s, sizeof s, "%s", c->name);
+                else if (line == 3)  snprintf(s, sizeof s, "ATK %d", c->attack);
+                else if (line == 4)  snprintf(s, sizeof s, "HP  %d", c->health);
+                else if (line == 5)  snprintf(s, sizeof s, "SIG %d", c->sigil);
+                else if (line == 6)  snprintf(s, sizeof s, "REQ %d", c->requirement);
+
+                printf("|%-*.*s| ", W, W, s);
+            }
+            putchar('\n');
+        }
+    }
+}
