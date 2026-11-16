@@ -38,10 +38,10 @@ MCard pop(Deck **top) {
 
 //========================================QUEUE FUNCTIONS========================================
 
-void enqueue(Deck *q, int value)
+void enqueue(Queue *q, Mcard card)
 {
-    Node *n = malloc(sizeof(Node));
-    n->data = value;
+    Deck *n = malloc(sizeof(Deck));
+    n->card = card;
     n->next = NULL;
 
     if (isEmpty(q))
@@ -51,22 +51,22 @@ void enqueue(Deck *q, int value)
     q->rear = n;
 }
 
-int dequeue(Queue *q)
+Mcard dequeue(Queue *q)
 {
+    Mcard card = {0};
     if (isEmpty(q))
-        return -1;
+        return card;
 
-    Node *n = q->front;
-    int value = n->data;
+    Deck *n = q->front;
+    card = n->card;
 
     q->front = n->next;
     if (q->front == NULL)
         q->rear = NULL;
 
     free(n);
-    return value;
+    return card;
 }
-
 
 
 
