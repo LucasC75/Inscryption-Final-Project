@@ -1,10 +1,14 @@
 #include "player_card.h"
+
+int score = 0;
+int maxScore = 5;
+
 //NEEDS THE 2D ARRAY FOR BOARD and the display function for it
 int isEmptyDeck(Deck *top) {
     return top == NULL;
 }
 
-//STACK FUNCTIONS
+//================================STACK FUNCTIONS================================
 void push(Deck **top, MCard card) {
     Deck *node = malloc(sizeof(Deck));
     if (node == NULL) {
@@ -31,3 +35,39 @@ MCard pop(Deck **top) {
  
     return card;
 }
+
+//========================================QUEUE FUNCTIONS========================================
+
+void enqueue(Deck *q, int value)
+{
+    Node *n = malloc(sizeof(Node));
+    n->data = value;
+    n->next = NULL;
+
+    if (isEmpty(q))
+        q->front = n;
+    else
+        q->rear->next = n;
+    q->rear = n;
+}
+
+int dequeue(Queue *q)
+{
+    if (isEmpty(q))
+        return -1;
+
+    Node *n = q->front;
+    int value = n->data;
+
+    q->front = n->next;
+    if (q->front == NULL)
+        q->rear = NULL;
+
+    free(n);
+    return value;
+}
+
+
+
+
+
