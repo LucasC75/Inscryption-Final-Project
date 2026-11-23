@@ -35,3 +35,49 @@ Grizzly,      6,4,0,3
 Great White,  2,4,10,3
 Urayuli,      7,7,0,4
 Guizani,      1,0,11,0
+
+Take this github code. We are making the basics of the game inscryption. Fix the code and clean up what we have. make it all work and run successfully. Here are some requirements to follow: IV. Program Organization
+Your project must be implemented in C
+Your project must contain at least:
+
+Two header files (.h files).
+Three C source files (.c files).
+
+A suggested organization is:
+main.c
+
+Main menu.
+Program initialization.
+Main game loop.
+Calls to player setup, deck management, battle, and exit functions.
+
+card.h
+
+MCard structure definition.
+Card-related function declarations.
+
+player.h
+
+Player structure definition.
+Player-related function declarations.
+
+card.c
+
+Card creation and display functions.
+Card validation.
+Type-bonus calculations.
+
+player.c
+
+Player initialization.
+Deck management.
+Hand management.
+Card selection.
+
+battle.c
+
+Stack implementation for decks.
+Queue implementation for cards.
+Battle resolution.
+Life Point scale.
+Winner determination. MAKE THE CODE AS SIMPLE AS POSSIBLE. THIS VERSION OF INSCRYPTION ONLY INVOLVES THE CARDS LISTED. WE DO NOT INCLUDE BONES IN THIS VERSION.
