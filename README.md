@@ -19,6 +19,8 @@ make
 | `card_definitions.txt`  | Card list: `Name, Health, Attack, Sigil, Blood cost` |
 
 ## Rules
+- Before the battle you get a random 12-card deck rolled by rarity (rarity = blood cost):
+  50% Common (0), 30% Uncommon (1), 15% Rare (2), 5% Epic (3-4). You may reroll up to 3 cards.
 - Draw from your main deck or squirrel deck each turn.
 - Pay a card's blood cost by sacrificing cards on your board (Black Goat = 3 blood).
 - Ring the bell: each card attacks the lane in front of it; empty lanes send damage to the scale.

@@ -23,6 +23,63 @@ int readInt(const char *prompt, int min, int max)
 
 /*========================== PLAYER INITIALIZATION ======================*/
 
+/* Rolls one card by rarity (rarity = blood cost):
+   50% common (0), 30% uncommon (1), 15% rare (2), 5% epic (3-4). */
+MCard rollCard(void)
+{
+    int rare = rand() % 100;
+
+    if (rare < 50) return randomCard(0, 0);
+    if (rare < 80) return randomCard(1, 1);
+    if (rare < 95) return randomCard(2, 2);
+    return randomCard(3, 4);
+}
+
+static const char *rarityName(MCard c)
+{
+    const char *names[] = {"Common", "Uncommon", "Rare", "Epic", "Epic"};
+    return names[c.cost];
+}
+
+static void showDeck(const MCard deck[])
+{
+    printf("\n--- YOUR DECK ---\n");
+    for (int i = 0; i < DECK_SIZE; i++) {
+        printf("%2d. %-9s ", i + 1, rarityName(deck[i]));
+        printCard(deck[i]);
+    }
+}
+
+/* Rolls a random deck, lets the player reroll up to MAX_REROLLS cards,
+   then pushes the deck onto the player's deck stack. */
+void buildDeck(Player *p)
+{
+    MCard deck[DECK_SIZE];
+    int rerolls = MAX_REROLLS;
+
+    for (int i = 0; i < DECK_SIZE; i++)
+        deck[i] = rollCard();
+
+    while (rerolls > 0) {
+        int slot;
+
+        showDeck(deck);
+        printf("Rerolls left: %d\n", rerolls);
+        slot = readInt("Reroll which card? (1-12, 0 to keep this deck): ", 0, DECK_SIZE);
+        if (slot == 0)
+            break;
+
+        printf("%s is rerolled into... ", deck[slot - 1].name);
+        deck[slot - 1] = rollCard();
+        printf("%s (%s)!\n", deck[slot - 1].name, rarityName(deck[slot - 1]));
+        rerolls--;
+    }
+    showDeck(deck);
+
+    for (int i = 0; i < DECK_SIZE; i++)
+        push(&p->deck, deck[i]);
+}
+
 void initPlayer(Player *p)
 {
     MCard squirrel = findCard("Squirrel");
@@ -33,8 +90,7 @@ void initPlayer(Player *p)
     for (int i = 0; i < LANES; i++)
         p->board[i] = (MCard){"", 0, 0, 0, 0};
 
-    for (int i = 0; i < DECK_SIZE; i++)
-        push(&p->deck, randomCard(4));
+    buildDeck(p);
     for (int i = 0; i < SQUIRREL_COUNT; i++)
         push(&p->squirrels, squirrel);
 

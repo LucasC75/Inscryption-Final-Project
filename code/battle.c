@@ -192,7 +192,7 @@ static int attackRow(MCard atk[], MCard def[], Player *owner, const char *who)
 static void fillQueue(Queue *q, int maxCost)
 {
     for (int i = 0; i < 10; i++)
-        enqueue(q, randomCard(maxCost));
+        enqueue(q, randomCard(0, maxCost));
 }
 
 /* Opponent moves up to 'count' cards from its queue into empty lanes. */

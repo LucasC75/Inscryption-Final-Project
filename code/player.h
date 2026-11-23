@@ -6,6 +6,7 @@
 #define LANES          4
 #define MAX_HAND       10
 #define DECK_SIZE      12
+#define MAX_REROLLS    3
 #define SQUIRREL_COUNT 10
 
 typedef struct {
@@ -18,7 +19,9 @@ typedef struct {
 
 int  readInt(const char *prompt, int min, int max);
 
-void initPlayer(Player *p);
+MCard rollCard(void);
+void  buildDeck(Player *p);
+void  initPlayer(Player *p);
 void freePlayer(Player *p);
 
 void  addToHand(Player *p, MCard c);

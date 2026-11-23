@@ -51,7 +51,7 @@ extern int   cardCount;
 /* Creation */
 int   loadCards(const char *filename);
 MCard findCard(const char *name);
-MCard randomCard(int maxCost);
+MCard randomCard(int minCost, int maxCost);
 
 /* Validation */
 int isValidCard(MCard c);

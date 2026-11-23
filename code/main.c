@@ -6,6 +6,9 @@
 static void howToPlay(void)
 {
     printf("HOW TO PLAY\n"
+           "- Before the battle you get a random 12-card deck. Cards are\n"
+           "  Common (0 blood), Uncommon (1), Rare (2) or Epic (3-4).\n"
+           "  You may reroll up to %d cards.\n"
            "- Each turn, draw from your main deck or your squirrel deck.\n"
            "- Play cards into your 4 lanes. Cards cost blood: sacrifice cards\n"
            "  already on your board to pay (each gives 1 blood, Black Goat gives 3).\n"
@@ -15,7 +18,7 @@ static void howToPlay(void)
            "  goes to the scale.\n"
            "- Tip the scale to +%d to win. If it reaches -%d, you lose.\n"
            "- Option 3 in the main menu lists every card and its sigil.\n",
-           MAX_SCORE, MAX_SCORE);
+           MAX_REROLLS, MAX_SCORE, MAX_SCORE);
 }
 
 int main(void)

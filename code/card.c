@@ -56,13 +56,14 @@ MCard findCard(const char *name)
     return none;
 }
 
-/* Random card (never a Squirrel) costing at most maxCost blood. */
-MCard randomCard(int maxCost)
+/* Random card (never a Squirrel) costing minCost..maxCost blood. */
+MCard randomCard(int minCost, int maxCost)
 {
     MCard c;
     do {
         c = cardList[rand() % cardCount];
-    } while (c.cost > maxCost || strcmp(c.name, "Squirrel") == 0);
+    } while (c.cost < minCost || c.cost > maxCost ||
+             strcmp(c.name, "Squirrel") == 0);
     return c;
 }
 
