@@ -1,83 +1,196 @@
-#include "player_card.h"
+/* card.c - card creation, validation, display and sigil (type) bonuses */
+#include "card.h"
 
-//==========================Card creation. Read from the .txt file and copy it into an array=======================
+MCard cardList[MAX_CARDS];
+int cardCount = 0;
 
-int loadCards(const char *filename, Mcard cards[], int maxCards) {
+static const char *SIGIL_NAMES[SIGIL_COUNT] = {
+    "", "Fledgling", "Touch of Death", "Rabbit Hole", "Bees Within", "Unkillable",
+    "Airborne", "Many Lives", "Worthy Sacrifice", "Mighty Leap", "Waterborne", "Mystery"
+};
+
+static const char *SIGIL_TEXT[SIGIL_COUNT] = {
+    "",
+    "Grows +1 ATK and +1 HP after a turn on the board.",
+    "Kills any card it damages.",
+    "When played, gives its owner a Squirrel.",
+    "When hit, gives its owner a Bee.",
+    "When it dies, a fresh copy goes back to its owner.",
+    "Flies over cards and hits the opponent directly.",
+    "Survives being sacrificed.",
+    "Counts as 3 blood when sacrificed.",
+    "Blocks Airborne attackers.",
+    "Dives underwater on the enemy turn, so attacks go past it.",
+    "Does nothing... yet."
+};
+
+/* ================================ CREATION ================================ */
+
+/* Reads "Name, Health, Attack, Sigil, Requirement" lines into cardList.
+   Lines starting with # are comments. Returns the number of cards, or -1. */
+int loadCards(const char *filename)
+{
+    char line[128];
     FILE *fp = fopen(filename, "r");
-    if (fp == NULL) {
-        printf("Error: could not open %s\n", filename);
+    if (fp == NULL)
         return -1;
-    }
 
-     int count = 0;
-    while (count < maxCards &&
-           fscanf(fp, "%49s %d %d %d %d", cards[count].name,
-                  &cards[count].health, &cards[count].attack, &cards[count].sigil, &cards[count].requirement) == 5) {
-        count++;
+    cardCount = 0;
+    while (cardCount < MAX_CARDS && fgets(line, sizeof line, fp) != NULL) {
+        MCard c;
+        if (line[0] == '#' || line[0] == '\n' || line[0] == '\r')
+            continue;
+        /* %31[^,] reads up to 31 characters (NAME_LEN - 1) until a comma */
+        if (sscanf(line, " %31[^,],%d,%d,%d,%d", c.name, &c.health, &c.attack,
+                   &c.sigil, &c.requirement) == 5 && validateCard(&c))
+            cardList[cardCount++] = c;
+        else
+            printf("Skipping bad card line: %s", line);
     }
 
     fclose(fp);
-    return count;
+    return cardCount;
 }
-//When calling in main should look like this: 
-/*int main(void) {
-    Mcard cardList[MAX_CARDS];
-    int n = loadCards("card_definitions.txt", cardList, MAX_CARDS);
- 
-    if (n < 0) {
+
+/* A card is valid if it has a name, is alive, and its numbers are in range. */
+int validateCard(const MCard *c)
+{
+    return c->name[0] != '\0' && c->health > 0 && c->attack >= 0 &&
+           c->sigil >= 0 && c->sigil < SIGIL_COUNT &&
+           c->requirement >= 0 && c->requirement <= 4;
+}
+
+/* Returns the card with this name, or NULL if it is not in the list. */
+const MCard *findCard(const char *name)
+{
+    for (int i = 0; i < cardCount; i++)
+        if (strcmp(cardList[i].name, name) == 0)
+            return &cardList[i];
+    return NULL;
+}
+
+/* Picks a random card. Rarity depends on blood cost:
+   common = 0 blood (50%), uncommon = 1 (30%), rare = 2 (15%), epic = 3+ (5%).
+   rarityBonus shifts the odds: negative = weaker cards, positive = stronger. */
+MCard randomCard(int rarityBonus)
+{
+    int picks[MAX_CARDS];
+    int count = 0;
+    int tier;
+    int roll = rand() % 100 + rarityBonus;
+
+    if (roll < 50)      tier = 0;
+    else if (roll < 80) tier = 1;
+    else if (roll < 95) tier = 2;
+    else                tier = 3;
+
+    for (int i = 0; i < cardCount; i++) {
+        int cost = cardList[i].requirement;
+        if (cost == tier || (tier == 3 && cost > 3))
+            picks[count++] = i;
+    }
+    if (count == 0)   /* no card of that rarity: pick any card */
+        return cardList[rand() % cardCount];
+    return cardList[picks[rand() % count]];
+}
+
+/* Board spaces with no card are stored as a card with 0 health. */
+int isEmptySlot(const MCard *c)
+{
+    return c->health <= 0;
+}
+
+/* ================================ DISPLAY ================================ */
+
+const char *sigilName(int sigil)
+{
+    return SIGIL_NAMES[sigil];
+}
+
+/* One line, e.g. "Wolf           ATK 3  HP 2  Cost 2" */
+void printCard(const MCard *c)
+{
+    printf("%-14s ATK %d  HP %d  Cost %d  %s\n",
+           c->name, c->attack, c->health, c->requirement, sigilName(c->sigil));
+}
+
+static void printBorder(int count)
+{
+    for (int i = 0; i < count; i++)
+        printf("+----------------+ ");
+    printf("\n");
+}
+
+/* Prints a row of board spaces as boxes, side by side. */
+void printCardRow(const MCard row[], int count)
+{
+    char stats[20];
+
+    printBorder(count);
+    for (int i = 0; i < count; i++)
+        printf("|%-16.16s| ", isEmptySlot(&row[i]) ? "" : row[i].name);
+    printf("\n");
+    for (int i = 0; i < count; i++) {
+        if (isEmptySlot(&row[i]))
+            snprintf(stats, sizeof stats, "    (empty)");
+        else
+            snprintf(stats, sizeof stats, "ATK %d  HP %d", row[i].attack, row[i].health);
+        printf("|%-16s| ", stats);
+    }
+    printf("\n");
+    for (int i = 0; i < count; i++)
+        printf("|%-16.16s| ", isEmptySlot(&row[i]) ? "" : sigilName(row[i].sigil));
+    printf("\n");
+    printBorder(count);
+}
+
+/* Lists every card and what each sigil does. */
+void printAllCards(void)
+{
+    printf("\nALL CARDS\n---------\n");
+    for (int i = 0; i < cardCount; i++)
+        printCard(&cardList[i]);
+
+    printf("\nSIGILS\n------\n");
+    for (int s = 1; s < SIGIL_COUNT; s++)
+        printf("%-17s %s\n", SIGIL_NAMES[s], SIGIL_TEXT[s]);
+}
+
+/* ========================= TYPE (SIGIL) BONUSES ========================= */
+
+/* How much blood this card gives when sacrificed. */
+int bloodValue(const MCard *c)
+{
+    return c->sigil == WORTHY_SACRIFICE ? 3 : 1;
+}
+
+/* Does this attack go past the defending space and hit the scale? */
+int attacksDirectly(const MCard *attacker, const MCard *defender)
+{
+    if (isEmptySlot(defender))
         return 1;
-    }
- --------------------------DISPLAY THE CARD LIST------------------------
-    for (int i = 0; i < n; i++) {
-        printf("Card name: %s \n
-                --------------------\n
-                Health: %d\n
-                Attack: %d\n
-                Sigil: %d\n
-                Requirement: %d\n",
-               cardList[i].name, cardList[i].health, cardList[i].attack, cardList[i].sigil, cardList[i].requirement);
-    }
- 
+    if (defender->sigil == WATERBORNE)   /* defender is underwater */
+        return 1;
+    if (attacker->sigil == AIRBORNE && defender->sigil != MIGHTY_LEAP)
+        return 1;
     return 0;
-}*/
-
-//====================================================DISPLAY FUNCTIONS=========================================
-
-void displayScale(int score, int maxScore)
-{
-    if (score >  maxScore) score =  maxScore;
-    if (score < -maxScore) score = -maxScore;
-    int pos = BAR + score * BAR / maxScore;
-
-    printf("OPPONENT [");
-    for (int i = 0; i <= 2 * BAR; i++)
-        putchar(i == pos ? 'O' : i == BAR ? '|' : '-');
-    printf("] YOU (%+d)\n", score);
 }
 
-void printBoard(Mcard *board[8])
+/* Damage done to the defending card. */
+int damageDealt(const MCard *attacker, const MCard *defender)
 {
-    for (int r = 4; r >= 0; r -= 4) {                 /* top row first */
-        for (int line = 0; line < 8; line++) {
-            for (int i = r; i < r + 4; i++) {
-                Mcard *c = board[i];
-                char s[64] = "";
+    if (attacker->sigil == TOUCH_OF_DEATH)
+        return defender->health;   /* always enough to kill it */
+    return attacker->attack;
+}
 
-                if (line == 0 || line == 7) {         /* top/bottom edge */
-                    printf("+%.*s+ ", W, "--------------------");
-                    continue;
-                }
-                if (line == 1)       snprintf(s, sizeof s, "%d", i + 1);
-                else if (!c)         { if (line == 3) snprintf(s, sizeof s, "  empty"); }
-                else if (line == 2)  snprintf(s, sizeof s, "%s", c->name);
-                else if (line == 3)  snprintf(s, sizeof s, "ATK %d", c->attack);
-                else if (line == 4)  snprintf(s, sizeof s, "HP  %d", c->health);
-                else if (line == 5)  snprintf(s, sizeof s, "SIG %d", c->sigil);
-                else if (line == 6)  snprintf(s, sizeof s, "REQ %d", c->requirement);
-
-                printf("|%-*.*s| ", W, W, s);
-            }
-            putchar('\n');
-        }
-    }
+/* Fledgling: the card grows once, then loses the sigil. Returns 1 if it grew. */
+int growUp(MCard *c)
+{
+    if (c->sigil != FLEDGLING)
+        return 0;
+    c->attack++;
+    c->health++;
+    c->sigil = NO_SIGIL;
+    return 1;
 }
