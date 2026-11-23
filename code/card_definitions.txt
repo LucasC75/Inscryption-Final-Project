@@ -1,5 +1,5 @@
 # Inscryption cards (no bones in this version: every cost is blood)
-# Format: Name, Health, Attack, Sigil, Requirement (blood cost)
+# Format: Name, Health, Attack, Sigil, Blood cost
 # Sigils: 0 none, 1 Fledgling, 2 Touch of Death, 3 Rabbit Hole, 4 Bees Within,
 #         5 Unkillable, 6 Airborne, 7 Many Lives, 8 Worthy Sacrifice,
 #         9 Mighty Leap, 10 Waterborne, 11 Mystery
